@@ -1,0 +1,41 @@
+#!/bin/bash
+
+DIR=`pwd`
+
+CURRENT=$DIR
+
+#echo "Looking in $CURRENT"
+
+
+MDIR="$CURRENT/.mgp"
+
+while [ ! -e $MDIR ]
+do
+#	echo "Looking in $CURRENT"
+	CURRENT=`dirname $CURRENT`
+	MDIR="$CURRENT/.mgp"
+
+	if [ $CURRENT = '/' ]
+	then
+		echo "$0 can't find .mgp!"
+		exit
+	fi
+done
+
+if [ ! -e $MDIR ]
+then
+	echo "$0 cant' find .mgp"
+	exit
+fi
+
+PATH_TO_SETTINGS_FILE="$MDIR/settings.xml"
+
+if [ ! -e "$PATH_TO_SETTINGS_FILE" ]
+then
+echo "$PATH_TO_SETTINGS_FILE does not exist!"
+exit 100
+fi
+
+CMD="mvn3 -s $PATH_TO_SETTINGS_FILE -Dmaven.repo.local=$MDIR/repo $@"
+echo $CMD
+eval "$CMD"
